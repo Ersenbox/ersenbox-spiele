@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0D1B2A">
+    <meta name="description" content="Ersenbox Spiele - Bildungsspiele für Kinder 3-8 Jahre">
+    <title>Ersenbox Spiele - Lernspiele</title>
+    
+    <link rel="manifest" href="data:application/json,{%22name%22:%22Ersenbox%20Spiele%22,%22short_name%22:%22Spiele%22,%22start_url%22:%22./%22,%22scope%22:%22./%22,%22display%22:%22standalone%22,%22background_color%22:%22%230D1B2A%22,%22theme_color%22:%22%23D4AF37%22,%22orientation%22:%22portrait-primary%22,%22icons%22:[{%22src%22:%22data:image/svg+xml,%253Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%20192%20192%27%253E%253Crect%20fill=%27%23D4AF37%27%20width=%27192%27%20height=%27192%27/%253E%253Ctext%20x=%2796%27%20y=%27120%27%20font-size=%27100%27%20fill=%27%230D1B2A%27%20text-anchor=%27middle%27%20dominant-baseline=%27middle%27%20font-weight=%27bold%27%20font-family=%27Arial%27%253E🎮%253C/text%253E%253C/svg%253E%22,%22sizes%22:%22192x192%22,%22type%22:%22image/svg+xml%22,%22purpose%22:%22any%22}]}">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        :root {
+            --navy: #0D1B2A;
+            --gold: #D4AF37;
+            --light: #F5F5F5;
+            --dark-gray: #2a3a4a;
+            --success: #4CAF50;
+            --warning: #FF6B6B;
+            --purple: #9B59B6;
+            --cyan: #4ECDC4;
+            --pink: #FF69B4;
+            --orange: #FF8C42;
+            --yellow: #FFC93C;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--navy) 0%, #1a2e42 100%);
+            color: var(--light);
+            min-height: 100vh;
+            overflow: hidden;
+            transition: background 0.3s ease;
+        }
+
+        body.light-mode {
+            background: linear-gradient(135deg, #FFF8DC 0%, #FFE4E1 100%);
+            color: var(--navy);
+        }
+
+        .app-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(90deg, var(--navy), #1a3a4a);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--gold);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 100;
+        }
+
+        body.light-mode header {
+            background: linear-gradient(90deg, #FFF, #FFE4E1);
+            border-bottom-color: var(--orange);
+        }
+
+        .header-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: var(--gold);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        body.light-mode .header-title {
+            color: var(--orange);
+        }
+
+        .emoji-title {
+            font-size: 1.8em;
+            animation: bounce 2s infinite;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .control-btn {
+            background: var(--gold);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            color: var(--navy);
+        }
+
+        body.light-mode .control-btn {
+            background: var(--orange);
+            color: white;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .control-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Main Content */
+        .content {
+            flex: 1;
+            overflow: auto;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            scrollbar-width: none;
+        }
+
+        .content::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Menu */
+        .menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            width: 100%;
+            max-width: 900px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .game-card {
+            background: linear-gradient(135deg, var(--gold), #c99a27);
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            border: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        .game-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.5);
+        }
+
+        .game-card:active {
+            transform: scale(0.95);
+        }
+
+        body.light-mode .game-card {
+            background: linear-gradient(135deg, var(--orange), #ff6b35);
+            box-shadow: 0 5px 20px rgba(255, 107, 53, 0.3);
+        }
+
+        .game-card-emoji {
+            font-size: 2.5em;
+            z-index: 1;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .game-card-text {
+            font-weight: bold;
+            color: var(--navy);
+            font-size: 1em;
+            text-align: center;
+            z-index: 1;
+        }
+
+        body.light-mode .game-card-text {
+            color: white;
+        }
+
+        /* Star Counter */
+        .star-counter {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: var(--gold);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            color: var(--navy);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 90;
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+            font-size: 1.1em;
+        }
+
+        body.light-mode .star-counter {
+            background: var(--orange);
+            color: white;
+        }
+
+        .star-icon {
+            font-size: 1.5em;
+            animation: spin 2s linear infinite;
+        }
+
+        /* Game Screen */
+        .game-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+            max-height: 100%;
+            overflow: auto;
+            animation: slideIn 0.3s ease;
+        }
+
+        .game-screen.active {
+            display: flex;
+        }
+
+        /* Back Button */
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--gold);
+            color: var(--navy);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1em;
+            z-index: 120;
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        body.light-mode .back-btn {
+            background: var(--orange);
+            color: white;
+        }
+
+        .back-btn:hover {
+            transform: translateX(-5px);
+        }
+
+        .back-btn.show {
+            display: block;
+        }
+
+        /* Canvas Drawing */
+        .canvas-container {
+            background: white;
+            border-radius: 15px;
+            padding: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+            cursor: crosshair;
+            border-radius: 10px;
+            touch-action: none;
+        }
+
+        /* Game Controls */
+        .game-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .game-btn, .option-btn {
+            background: var(--gold);
+            color: var(--navy);
+            border: none;
+            padding: 15px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            min-width: 100px;
+        }
+
+        body.light-mode .game-btn,
+        body.light-mode .option-btn {
+            background: var(--orange);
+            color: white;
+        }
+
+        .game-btn:hover, .option-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .game-btn:active, .option-btn:active {
+            transform: scale(0.95);
+        }
+
+        .option-btn {
+            flex: 1;
+            min-width: 70px;
+            padding: 12px 15px;
+        }
+
+        .option-btn.correct {
+            background: var(--success);
+            color: white;
+        }
+
+        .option-btn.incorrect {
+            background: var(--warning);
+            color: white;
+        }
+
+        /* Game Display */
+        .game-display {
+            font-size: 4em;
+            font-weight: bold;
+            color: var(--gold);
+            text-align: center;
+            min-height: 80px;
+            animation: slideDown 0.5s ease;
+        }
+
+        body.light-mode .game-display {
+            color: var(--orange);
+        }
+
+        .question-text {
+            font-size: 1.5em;
+            color: var(--gold);
+            text-align: center;
+            font-weight: bold;
+        }
+
+        body.light-mode .question-text {
+            color: var(--orange);
+        }
+
+        /* Message */
+        .message {
+            font-size: 2em;
+            font-weight: bold;
+            min-height: 50px;
+            animation: fadeIn 0.5s ease;
+            text-align: center;
+        }
+
+        .message.correct {
+            color: var(--success);
+        }
+
+        .message.incorrect {
+            color: var(--warning);
+        }
+
+        /* Options Grid */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        /* Image Display */
+        .image-display {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            animation: popIn 0.5s ease;
+        }
+
+        /* Achievements */
+        .achievement-popup {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--gold);
+            color: var(--navy);
+            padding: 20px 30px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 1.2em;
+            box-shadow: 0 5px 25px rgba(212, 175, 55, 0.5);
+            animation: slideUp 0.5s ease;
+            z-index: 200;
+        }
+
+        body.light-mode .achievement-popup {
+            background: var(--orange);
+            color: white;
+        }
+
+        /* Animations */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes shimmer {
+            0% { transform: rotate(0deg) translate(-50%, -50%); }
+            100% { transform: rotate(360deg) translate(-50%, -50%); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .menu {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .game-display {
+                font-size: 3em;
+            }
+
+            header {
+                padding: 10px 15px;
+            }
+
+            .header-title {
+                font-size: 1.2em;
+            }
+
+            .content {
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .menu {
+                grid-template-columns: 1fr;
+            }
+
+            .game-display {
+                font-size: 2.5em;
+            }
+
+            .star-counter {
+                top: 70px;
+                right: 10px;
+                font-size: 0.9em;
+            }
+
+            .back-btn {
+                left: 10px;
+                padding: 8px 15px;
+                font-size: 0.9em;
+            }
+        }
+
+        /* Language Text */
+        .lang-name {
+            font-size: 0.8em;
+            opacity: 0.8;
+        }
+
+        /* Settings Panel */
+        .settings-panel {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background: var(--navy);
+            border: 3px solid var(--gold);
+            border-radius: 15px;
+            padding: 15px;
+            z-index: 150;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+        }
+
+        body.light-mode .settings-panel {
+            background: white;
+            color: var(--navy);
+            border-color: var(--orange);
+        }
+
+        .settings-panel.show {
+            display: flex;
+        }
+
+        .settings-label {
+            font-weight: bold;
+            color: var(--gold);
+            font-size: 0.9em;
+        }
+
+        body.light-mode .settings-label {
+            color: var(--orange);
+        }
+
+        .lang-select {
+            background: var(--gold);
+            border: none;
+            padding: 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            color: var(--navy);
+        }
+
+        body.light-mode .lang-select {
+            background: var(--orange);
+            color: white;
+        }
+
+        .mode-toggle {
+            background: var(--gold);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            color: var(--navy);
+            font-size: 0.9em;
+        }
+
+        body.light-mode .mode-toggle {
+            background: var(--orange);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header>
+            <div class="header-title">
+                <span class="emoji-title">🎮</span>
+                <span id="headerTitle">Ersenbox Spiele</span>
+            </div>
+            <div class="header-controls">
+                <button class="control-btn" id="settingsBtn" onclick="toggleSettings()">⚙️</button>
+            </div>
+        </header>
+
+        <!-- Star Counter -->
+        <div class="star-counter">
+            <span class="star-icon">⭐</span>
+            <span id="starCount">0</span>
+        </div>
+
+        <!-- Settings Panel -->
+        <div class="settings-panel" id="settingsPanel">
+            <div class="settings-label">🌍 Sprache / Dil / Language</div>
+            <select class="lang-select" id="langSelect" onchange="changeLanguage(this.value)">
+                <option value="de">🇩🇪 Deutsch</option>
+                <option value="tr">🇹🇷 Türkçe</option>
+                <option value="en">🇬🇧 English</option>
+            </select>
+            <div class="settings-label">🌙 Modus / Kip / Mode</div>
+            <button class="mode-toggle" id="modeToggle" onclick="toggleDarkMode()">🌙 Dunkel</button>
+        </div>
+
+        <!-- Back Button -->
+        <button class="back-btn" id="backBtn" onclick="goBackToMenu()">← Zurück</button>
+
+        <!-- Main Content -->
+        <div class="content" id="content">
+            <!-- Menu -->
+            <div class="menu" id="menuGrid"></div>
+
+            <!-- Game Screens -->
+            <div class="game-screen" id="gameColors">
+                <div class="question-text" id="colorQuestion">Wähle die Farbe</div>
+                <div class="game-display" id="colorDisplay"></div>
+                <div class="options-grid" id="colorOptions"></div>
+                <div class="message" id="colorMessage"></div>
+            </div>
+
+            <div class="game-screen" id="gameShapes">
+                <div class="question-text" id="shapeQuestion">Wähle die Form</div>
+                <div class="game-display" id="shapeDisplay"></div>
+                <div class="options-grid" id="shapeOptions"></div>
+                <div class="message" id="shapeMessage"></div>
+            </div>
+
+            <div class="game-screen" id="gameNumbers">
+                <div class="question-text" id="numberQuestion">Zähle die Objekte</div>
+                <div class="game-display" id="numberDisplay"></div>
+                <div class="options-grid" id="numberOptions"></div>
+                <div class="message" id="numberMessage"></div>
+            </div>
+
+            <div class="game-screen" id="gameLetters">
+                <div class="question-text" id="letterQuestion">Welcher Buchstabe?</div>
+                <div class="game-display" id="letterDisplay">A</div>
+                <div class="game-controls">
+                    <button class="game-btn" onclick="speakLetter()">🔊 Höre zu</button>
+                    <button class="game-btn" onclick="nextLetter()">→ Nächster</button>
+                </div>
+            </div>
+
+            <div class="game-screen" id="gameDrawing">
+                <div class="question-text" id="drawQuestion">Zeichne den Buchstaben</div>
+                <div class="canvas-container">
+                    <canvas id="drawCanvas" width="300" height="300"></canvas>
+                </div>
+                <div class="game-controls">
+                    <button class="game-btn" onclick="clearCanvas()">🗑️ Löschen</button>
+                    <button class="game-btn" onclick="checkDrawing()">✓ Überprüfen</button>
+                </div>
+                <div class="message" id="drawMessage"></div>
+            </div>
+
+            <div class="game-screen" id="gameMatching">
+                <div class="question-text" id="matchQuestion">Verbinde die Paare</div>
+                <div class="options-grid" id="matchOptions"></div>
+                <div class="message" id="matchMessage"></div>
+            </div>
+
+            <div class="game-screen" id="gameQuiz">
+                <div class="question-text" id="quizQuestion">Beantworte die Frage</div>
+                <div class="options-grid" id="quizOptions"></div>
+                <div class="message" id="quizMessage"></div>
+            </div>
+
+            <div class="game-screen" id="gameSorting">
+                <div class="question-text" id="sortQuestion">Sortiere nach Farbe</div>
+                <div class="options-grid" id="sortOptions"></div>
+                <div class="message" id="sortMessage"></div>
+            </div>
+
+            <div class="game-screen" id="gamePuzzle">
+                <div class="question-text" id="puzzleQuestion">Finde das richtige Stück</div>
+                <div class="game-display" id="puzzleDisplay"></div>
+                <div class="options-grid" id="puzzleOptions"></div>
+                <div class="message" id="puzzleMessage"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Multilingual Strings
+        const strings = {
+            de: {
+                title: "Ersenbox Spiele",
+                headerTitle: "Ersenbox Spiele",
+                back: "← Zurück",
+                colors: "Farben",
+                shapes: "Formen",
+                numbers: "Zahlen",
+                letters: "Buchstaben",
+                drawing: "Zeichnen",
+                matching: "Verbinden",
+                quiz: "Quiz",
+                sorting: "Sortieren",
+                puzzle: "Puzzle",
+                colorQuestion: "Wähle die Farbe",
+                shapeQuestion: "Wähle die Form",
+                numberQuestion: "Zähle die Objekte",
+                letterQuestion: "Welcher Buchstabe?",
+                drawQuestion: "Zeichne den Buchstaben",
+                matchQuestion: "Verbinde die Paare",
+                quizQuestion: "Beantworte die Frage",
+                sortQuestion: "Sortiere nach Farbe",
+                puzzleQuestion: "Finde das richtige Stück",
+                listen: "🔊 Höre zu",
+                next: "→ Nächster",
+                clear: "🗑️ Löschen",
+                check: "✓ Überprüfen",
+                correct: "✅ Richtig!",
+                incorrect: "❌ Versuche nochmal!",
+                excellent: "🌟 Ausgezeichnet!",
+                wellDone: "👏 Gut gemacht!",
+                starEarned: "⭐ Stern verdient!"
+            },
+            tr: {
+                title: "Ersenbox Oyunlar",
+                headerTitle: "Ersenbox Oyunlar",
+                back: "← Geri",
+                colors: "Renkler",
+                shapes: "Şekiller",
+                numbers: "Sayılar",
+                letters: "Harfler",
+                drawing: "Çiz",
+                matching: "Eşleştir",
+                quiz: "Quiz",
+                sorting: "Sırala",
+                puzzle: "Bulmaca",
+                colorQuestion: "Rengi seç",
+                shapeQuestion: "Şekli seç",
+                numberQuestion: "Nesneleri sayıt",
+                letterQuestion: "Hangi harf?",
+                drawQuestion: "Harfi çiz",
+                matchQuestion: "Çiftleri eşleştir",
+                quizQuestion: "Soruyu cevapla",
+                sortQuestion: "Renklere göre sırala",
+                puzzleQuestion: "Doğru parçayı bul",
+                listen: "🔊 Dinle",
+                next: "→ Sonraki",
+                clear: "🗑️ Sil",
+                check: "✓ Kontrol Et",
+                correct: "✅ Doğru!",
+                incorrect: "❌ Tekrar Dene!",
+                excellent: "🌟 Harika!",
+                wellDone: "👏 İyi Yapıldı!",
+                starEarned: "⭐ Yıldız Kazandın!"
+            },
+            en: {
+                title: "Ersenbox Games",
+                headerTitle: "Ersenbox Games",
+                back: "← Back",
+                colors: "Colors",
+                shapes: "Shapes",
+                numbers: "Numbers",
+                letters: "Letters",
+                drawing: "Draw",
+                matching: "Match",
+                quiz: "Quiz",
+                sorting: "Sort",
+                puzzle: "Puzzle",
+                colorQuestion: "Choose the color",
+                shapeQuestion: "Choose the shape",
+                numberQuestion: "Count the objects",
+                letterQuestion: "Which letter?",
+                drawQuestion: "Draw the letter",
+                matchQuestion: "Match the pairs",
+                quizQuestion: "Answer the question",
+                sortQuestion: "Sort by color",
+                puzzleQuestion: "Find the right piece",
+                listen: "🔊 Listen",
+                next: "→ Next",
+                clear: "🗑️ Clear",
+                check: "✓ Check",
+                correct: "✅ Correct!",
+                incorrect: "❌ Try again!",
+                excellent: "🌟 Excellent!",
+                wellDone: "👏 Well done!",
+                starEarned: "⭐ Star earned!"
+            }
+        };
+
+        // Game State
+        let currentLang = 'de';
+        let currentGame = null;
+        let isDarkMode = true;
+        let stars = 0;
+        let gameScores = {};
+
+        const games = [
+            { id: 'colors', name: 'colors', emoji: '🌈' },
+            { id: 'shapes', name: 'shapes', emoji: '🔷' },
+            { id: 'numbers', name: 'numbers', emoji: '🔢' },
+            { id: 'letters', name: 'letters', emoji: '🔤' },
+            { id: 'drawing', name: 'drawing', emoji: '✏️' },
+            { id: 'matching', name: 'matching', emoji: '🎯' },
+            { id: 'quiz', name: 'quiz', emoji: '❓' },
+            { id: 'sorting', name: 'sorting', emoji: '🎨' },
+            { id: 'puzzle', name: 'puzzle', emoji: '🧩' }
+        ];
+
+        function getString(key) {
+            return strings[currentLang]?.[key] || key;
+        }
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            updateUI();
+            localStorage.setItem('preferredLang', lang);
+        }
+
+        function toggleDarkMode() {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('darkMode', isDarkMode);
+            updateModeButton();
+        }
+
+        function updateModeButton() {
+            const btn = document.getElementById('modeToggle');
+            btn.textContent = isDarkMode ? '🌙 Dunkel' : '☀️ Hell';
+        }
+
+        function toggleSettings() {
+            document.getElementById('settingsPanel').classList.toggle('show');
+        }
+
+        function updateUI() {
+            document.getElementById('headerTitle').textContent = getString('headerTitle');
+            document.getElementById('backBtn').textContent = getString('back');
+            document.getElementById('langSelect').value = currentLang;
+            
+            // Update game cards
+            const grid = document.getElementById('menuGrid');
+            grid.innerHTML = '';
+            games.forEach(game => {
+                const card = document.createElement('div');
+                card.className = 'game-card';
+                card.innerHTML = `
+                    <div class="game-card-emoji">${game.emoji}</div>
+                    <div class="game-card-text">${getString(game.name)}</div>
+                `;
+                card.onclick = () => startGame(game.id);
+                grid.appendChild(card);
+            });
+        }
+
+        function startGame(gameId) {
+            currentGame = gameId;
+            document.getElementById('backBtn').classList.add('show');
+            
+            // Hide menu, show game
+            document.querySelectorAll('.game-screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('game' + gameId.charAt(0).toUpperCase() + gameId.slice(1)).classList.add('active');
+            
+            // Initialize game
+            if (gameId === 'colors') initColors();
+            if (gameId === 'shapes') initShapes();
+            if (gameId === 'numbers') initNumbers();
+            if (gameId === 'letters') initLetters();
+            if (gameId === 'drawing') initDrawing();
+            if (gameId === 'matching') initMatching();
+            if (gameId === 'quiz') initQuiz();
+            if (gameId === 'sorting') initSorting();
+            if (gameId === 'puzzle') initPuzzle();
+            
+            playGameSound();
+        }
+
+        function goBackToMenu() {
+            currentGame = null;
+            document.getElementById('backBtn').classList.remove('show');
+            document.querySelectorAll('.game-screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('menuGrid').parentElement.scrollTop = 0;
+        }
+
+        // ===== GAME IMPLEMENTATIONS =====
+
+        // COLORS GAME
+        function initColors() {
+            const colors = [
+                { name: 'Rot', code: '#FF6B6B', de: 'Rot', tr: 'Kırmızı', en: 'Red' },
+                { name: 'Blau', code: '#4ECDC4', de: 'Blau', tr: 'Mavi', en: 'Blue' },
+                { name: 'Grün', code: '#45B7D1', de: 'Grün', tr: 'Yeşil', en: 'Green' },
+                { name: 'Gelb', code: '#FFC93C', de: 'Gelb', tr: 'Sarı', en: 'Yellow' },
+                { name: 'Lila', code: '#9B59B6', de: 'Lila', tr: 'Mor', en: 'Purple' },
+                { name: 'Orange', code: '#FF8C42', de: 'Orange', tr: 'Turuncu', en: 'Orange' }
+            ];
+            
+            const target = colors[Math.floor(Math.random() * colors.length)];
+            const shuffled = [...colors].sort(() => Math.random() - 0.5);
+            
+            document.getElementById('colorDisplay').style.backgroundColor = target.code;
+            document.getElementById('colorDisplay').style.width = '150px';
+            document.getElementById('colorDisplay').style.height = '150px';
+            document.getElementById('colorDisplay').style.borderRadius = '20px';
+            document.getElementById('colorMessage').textContent = '';
+            
+            const options = document.getElementById('colorOptions');
+            options.innerHTML = '';
+            shuffled.forEach(color => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = currentLang === 'de' ? color.de : currentLang === 'tr' ? color.tr : color.en;
+                btn.style.backgroundColor = color.code;
+                btn.style.color = ['#FF6B6B', '#FFC93C'].includes(color.code) ? '#000' : '#fff';
+                btn.onclick = () => {
+                    if (color.code === target.code) {
+                        earnStar();
+                        document.getElementById('colorMessage').textContent = getString('correct');
+                        document.getElementById('colorMessage').className = 'message correct';
+                        setTimeout(initColors, 1000);
+                    } else {
+                        document.getElementById('colorMessage').textContent = getString('incorrect');
+                        document.getElementById('colorMessage').className = 'message incorrect';
+                    }
+                };
+                options.appendChild(btn);
+            });
+        }
+
+        // SHAPES GAME
+        function initShapes() {
+            const shapes = ['⭕', '🟩', '🔺', '⭐', '❤️', '💜'];
+            const target = shapes[Math.floor(Math.random() * shapes.length)];
+            const shuffled = [...shapes].sort(() => Math.random() - 0.5);
+            
+            document.getElementById('shapeDisplay').textContent = target;
+            document.getElementById('shapeDisplay').style.fontSize = '5em';
+            document.getElementById('shapeMessage').textContent = '';
+            
+            const options = document.getElementById('shapeOptions');
+            options.innerHTML = '';
+            shuffled.forEach(shape => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = shape;
+                btn.style.fontSize = '2.5em';
+                btn.onclick = () => {
+                    if (shape === target) {
+                        earnStar();
+                        document.getElementById('shapeMessage').textContent = getString('correct');
+                        document.getElementById('shapeMessage').className = 'message correct';
+                        setTimeout(initShapes, 1000);
+                    } else {
+                        document.getElementById('shapeMessage').textContent = getString('incorrect');
+                        document.getElementById('shapeMessage').className = 'message incorrect';
+                    }
+                };
+                options.appendChild(btn);
+            });
+        }
+
+        // NUMBERS GAME
+        function initNumbers() {
+            const count = Math.floor(Math.random() * 9) + 1;
+            const options = [];
+            for (let i = 1; i <= 9; i++) options.push(i);
+            const shuffled = options.sort(() => Math.random() - 0.5);
+            
+            document.getElementById('numberDisplay').textContent = '🍎'.repeat(count);
+            document.getElementById('numberDisplay').style.fontSize = '3em';
+            document.getElementById('numberMessage').textContent = '';
+            
+            const optionsDiv = document.getElementById('numberOptions');
+            optionsDiv.innerHTML = '';
+            shuffled.forEach(num => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = num;
+                btn.style.fontSize = '1.5em';
+                btn.onclick = () => {
+                    if (num === count) {
+                        earnStar();
+                        document.getElementById('numberMessage').textContent = getString('correct');
+                        document.getElementById('numberMessage').className = 'message correct';
+                        setTimeout(initNumbers, 1000);
+                    } else {
+                        document.getElementById('numberMessage').textContent = getString('incorrect');
+                        document.getElementById('numberMessage').className = 'message incorrect';
+                    }
+                };
+                optionsDiv.appendChild(btn);
+            });
+        }
+
+        // LETTERS GAME
+        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜSS'.split('');
+        let letterIndex = 0;
+
+        function initLetters() {
+            letterIndex = Math.floor(Math.random() * letters.length);
+            document.getElementById('letterDisplay').textContent = letters[letterIndex];
+        }
+
+        function speakLetter() {
+            const letter = letters[letterIndex];
+            const utterance = new SpeechSynthesisUtterance(letter);
+            utterance.lang = 'de-DE';
+            speechSynthesis.speak(utterance);
+        }
+
+        function nextLetter() {
+            letterIndex = (letterIndex + 1) % letters.length;
+            document.getElementById('letterDisplay').textContent = letters[letterIndex];
+        }
+
+        // DRAWING GAME
+        let canvas, ctx;
+
+        function initDrawing() {
+            canvas = document.getElementById('drawCanvas');
+            ctx = canvas.getContext('2d');
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = '#0D1B2A';
+            ctx.lineWidth = 5;
+            ctx.lineCap = 'round';
+            
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('touchstart', handleTouch);
+            canvas.addEventListener('touchmove', handleTouch);
+            canvas.addEventListener('touchend', stopDrawing);
+        }
+
+        let isDrawing = false;
+
+        function startDrawing(e) {
+            isDrawing = true;
+            const rect = canvas.getBoundingClientRect();
+            ctx.beginPath();
+            ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            const rect = canvas.getBoundingClientRect();
+            ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+            ctx.stroke();
+        }
+
+        function handleTouch(e) {
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent(e.type === 'touchstart' ? 'mousedown' : 'mousemove', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(mouseEvent);
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+            ctx.closePath();
+        }
+
+        function clearCanvas() {
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            document.getElementById('drawMessage').textContent = '';
+        }
+
+        function checkDrawing() {
+            earnStar();
+            document.getElementById('drawMessage').textContent = getString('correct');
+            document.getElementById('drawMessage').className = 'message correct';
+            setTimeout(() => {
+                clearCanvas();
+                initDrawing();
+            }, 1000);
+        }
+
+        // MATCHING GAME
+        function initMatching() {
+            const pairs = [
+                { left: '🍎', right: 'Apfel' },
+                { left: '🐱', right: 'Katze' },
+                { left: '☀️', right: 'Sonne' },
+                { left: '🌊', right: 'Wasser' }
+            ];
+            
+            const shuffled = [...pairs].sort(() => Math.random() - 0.5);
+            const options = document.getElementById('matchOptions');
+            options.innerHTML = '';
+            
+            shuffled.forEach((pair, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = `${pair.left} = ${pair.right}`;
+                btn.onclick = () => {
+                    earnStar();
+                    document.getElementById('matchMessage').textContent = getString('correct');
+                    document.getElementById('matchMessage').className = 'message correct';
+                    setTimeout(initMatching, 1000);
+                };
+                options.appendChild(btn);
+            });
+        }
+
+        // QUIZ GAME
+        function initQuiz() {
+            const quizzes = [
+                { q: '2 + 1 = ?', a: '3', opts: ['2', '3', '4'] },
+                { q: '5 + 2 = ?', a: '7', opts: ['5', '6', '7'] },
+                { q: 'Mit den Augen...?', a: 'Sehen', opts: ['Sehen', 'Hören', 'Riechen'] }
+            ];
+            
+            const quiz = quizzes[Math.floor(Math.random() * quizzes.length)];
+            const shuffled = [...quiz.opts].sort(() => Math.random() - 0.5);
+            
+            document.getElementById('quizQuestion').textContent = quiz.q;
+            document.getElementById('quizMessage').textContent = '';
+            
+            const options = document.getElementById('quizOptions');
+            options.innerHTML = '';
+            shuffled.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = opt;
+                btn.onclick = () => {
+                    if (opt === quiz.a) {
+                        earnStar();
+                        btn.classList.add('correct');
+                        document.getElementById('quizMessage').textContent = getString('correct');
+                        document.getElementById('quizMessage').className = 'message correct';
+                        setTimeout(initQuiz, 1500);
+                    } else {
+                        btn.classList.add('incorrect');
+                        document.getElementById('quizMessage').textContent = getString('incorrect');
+                        document.getElementById('quizMessage').className = 'message incorrect';
+                    }
+                };
+                options.appendChild(btn);
+            });
+        }
+
+        // SORTING GAME
+        function initSorting() {
+            const items = ['🔴', '🔵', '🟢', '🟡', '🟣', '🟠'];
+            const shuffled = [...items].sort(() => Math.random() - 0.5);
+            
+            const options = document.getElementById('sortOptions');
+            options.innerHTML = '';
+            shuffled.forEach(item => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = item;
+                btn.style.fontSize = '2em';
+                btn.onclick = () => {
+                    earnStar();
+                    document.getElementById('sortMessage').textContent = getString('correct');
+                    document.getElementById('sortMessage').className = 'message correct';
+                };
+                options.appendChild(btn);
+            });
+        }
+
+        // PUZZLE GAME
+        function initPuzzle() {
+            const shapes = ['⭕', '🟩', '🔺', '⭐'];
+            const target = shapes[Math.floor(Math.random() * shapes.length)];
+            const shuffled = [...shapes].sort(() => Math.random() - 0.5);
+            
+            document.getElementById('puzzleDisplay').textContent = target;
+            document.getElementById('puzzleDisplay').style.fontSize = '4em';
+            document.getElementById('puzzleMessage').textContent = '';
+            
+            const options = document.getElementById('puzzleOptions');
+            options.innerHTML = '';
+            shuffled.forEach(shape => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = shape;
+                btn.style.fontSize = '2.5em';
+                btn.onclick = () => {
+                    if (shape === target) {
+                        earnStar();
+                        document.getElementById('puzzleMessage').textContent = getString('correct');
+                        document.getElementById('puzzleMessage').className = 'message correct';
+                        setTimeout(initPuzzle, 1000);
+                    } else {
+                        document.getElementById('puzzleMessage').textContent = getString('incorrect');
+                        document.getElementById('puzzleMessage').className = 'message incorrect';
+                    }
+                };
+                options.appendChild(btn);
+            });
+        }
+
+        // Utilities
+        function earnStar() {
+            stars++;
+            document.getElementById('starCount').textContent = stars;
+            localStorage.setItem('stars', stars);
+            playSuccessSound();
+        }
+
+        function playGameSound() {
+            // Simple beep using Web Audio API
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = 523.25;
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.2);
+        }
+
+        function playSuccessSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const notes = [659, 784];
+            
+            notes.forEach((freq, i) => {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = freq;
+                oscillator.type = 'sine';
+                
+                const time = audioContext.currentTime + (i * 0.1);
+                gainNode.gain.setValueAtTime(0.3, time);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, time + 0.2);
+                
+                oscillator.start(time);
+                oscillator.stop(time + 0.2);
+            });
+        }
+
+        // Initialize
+        window.onload = () => {
+            // Load preferences
+            const savedLang = localStorage.getItem('preferredLang');
+            if (savedLang) currentLang = savedLang;
+            
+            const savedDarkMode = localStorage.getItem('darkMode');
+            if (savedDarkMode === 'false') {
+                isDarkMode = false;
+                document.body.classList.add('light-mode');
+            }
+            
+            const savedStars = localStorage.getItem('stars');
+            if (savedStars) {
+                stars = parseInt(savedStars);
+                document.getElementById('starCount').textContent = stars;
+            }
+            
+            // Initialize UI
+            updateUI();
+            updateModeButton();
+            
+            // Service Worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('data:application/javascript,' + encodeURIComponent(`
+                    self.addEventListener('install', e => {
+                        e.waitUntil(caches.open('ersenbox-v1').then(cache => {
+                            return cache.addAll([]);
+                        }));
+                    });
+                    self.addEventListener('fetch', e => {
+                        e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
+                    });
+                `)).catch(() => {});
+            }
+        };
+    </script>
+</body>
+</html>
