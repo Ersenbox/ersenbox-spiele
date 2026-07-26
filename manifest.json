@@ -1,0 +1,19 @@
+{
+  "name": "Ersenbox Spiele - Kinder Bildungs App",
+  "short_name": "Ersenbox Spiele",
+  "description": "Eine farbenfrohe Lern-App für Kinder (3-8 Jahre)",
+  "start_url": "/",
+  "display": "fullscreen",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "background_color": "#0D1B2A",
+  "theme_color": "#D4AF37",
+  "icons": [
+    {
+      "src": "assets/images/logos/35-logo-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
