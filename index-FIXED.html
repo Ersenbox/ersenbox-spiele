@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Ersenbox Spiele - Kinder Bildungs App (3-8 Jahre)">
+    <meta name="theme-color" content="#0D1B2A">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Ersenbox Spiele">
+    
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%230D1B2A' width='192' height='192'/><text x='96' y='120' font-size='100' fill='%23D4AF37' text-anchor='middle' font-weight='bold'>E</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%230D1B2A' width='180' height='180' rx='40'/><text x='90' y='130' font-size='90' fill='%23D4AF37' text-anchor='middle' font-weight='bold'>E</text></svg>">
+    
+    <title>Ersenbox Spiele</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0D1B2A 0%, #1a2f4a 100%);
+            overflow: hidden;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 15px;
+            border: 2px solid #D4AF37;
+            gap: 10px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #D4AF37;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s;
+            background: #D4AF37;
+            color: #0D1B2A;
+        }
+
+        .btn-small:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+        }
+
+        .stars-display {
+            font-size: 20px;
+            color: #D4AF37;
+            font-weight: bold;
+        }
+
+        .install-btn {
+            padding: 10px 16px;
+            background: #D4AF37;
+            color: #0D1B2A;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: none;
+            transition: all 0.3s;
+        }
+
+        .install-btn.visible {
+            display: block;
+        }
+
+        .install-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            width: 100%;
+            padding: 20px;
+        }
+
+        .game-card {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #D4AF37 0%, #e6c547 100%);
+            border-radius: 15px;
+            border: 3px solid #0D1B2A;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            padding: 15px;
+            text-align: center;
+        }
+
+        .game-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .game-icon {
+            font-size: 48px;
+            line-height: 1;
+        }
+
+        .game-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #0D1B2A;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.3);
+        }
+
+        @media (max-width: 768px) {
+            .games-grid {
+                grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+                gap: 12px;
+                padding: 15px;
+            }
+
+            .game-card {
+                border-width: 2px;
+            }
+
+            .game-icon {
+                font-size: 36px;
+            }
+
+            .game-name {
+                font-size: 12px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .logo {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .games-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #0D1B2A;
+            border: 2px solid #D4AF37;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            text-align: center;
+        }
+
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            background: white;
+            border-radius: 10px;
+            padding: 10px;
+            margin: 20px auto;
+        }
+
+        .modal-title {
+            color: #D4AF37;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .modal-text {
+            color: #fff;
+            margin: 15px 0;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #D4AF37;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading {
+            color: #D4AF37;
+            font-size: 24px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🎮 Ersenbox Spiele</div>
+            <div class="header-actions">
+                <div class="stars-display">⭐ <span id="stars">0</span></div>
+                <button class="btn-small" onclick="toggleLanguage()">DE/TR/EN</button>
+                <button class="btn-small" onclick="toggleDarkMode()">🌙</button>
+                <button class="install-btn" id="installBtn" onclick="installApp()">📱 Install</button>
+                <button class="btn-small" onclick="showQRCode()">📲 QR</button>
+            </div>
+        </div>
+
+        <div class="games-grid" id="gamesGrid">
+            <!-- Games will be loaded here -->
+        </div>
+    </div>
+
+    <!-- QR Code Modal -->
+    <div class="modal" id="qrModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeQRModal()">✕</button>
+            <div class="modal-title">📲 App Installieren</div>
+            <div class="qr-code" id="qrCodeContainer"></div>
+            <div class="modal-text">Scan den QR Code zum Installieren!</div>
+            <div class="modal-text" style="font-size: 12px; color: #aaa;">
+                Oder klick oben auf "📱 Install"
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const GAMES = [
+            { name: 'Farben', icon: '🌈', id: 'colors' },
+            { name: 'Formen', icon: '🔷', id: 'shapes' },
+            { name: 'Zahlen', icon: '🔢', id: 'numbers' },
+            { name: 'Buchstaben', icon: '🔤', id: 'letters' },
+            { name: 'Zeichnen', icon: '🖍️', id: 'drawing' },
+            { name: 'Verbinden', icon: '🎯', id: 'connect' },
+            { name: 'Quiz', icon: '❓', id: 'quiz' },
+            { name: 'Sortieren', icon: '🎨', id: 'sort' },
+            { name: 'Puzzle', icon: '🧩', id: 'puzzle' }
+        ];
+
+        let currentLanguage = 'de';
+        let deferredPrompt;
+        let stars = 0;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadStars();
+            renderGames();
+            registerServiceWorker();
+            setupInstallPrompt();
+            setBackgroundImage();
+        });
+
+        // Service Worker Registration
+        async function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                try {
+                    const registration = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
+                    console.log('✓ Service Worker registered');
+                } catch (error) {
+                    console.log('Service Worker registration failed:', error);
+                }
+            }
+        }
+
+        // Install Prompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installBtn').classList.add('visible');
+        });
+
+        function installApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('✓ App installed');
+                        document.getElementById('installBtn').classList.remove('visible');
+                    }
+                });
+            }
+        }
+
+        // Setup Install Prompt
+        function setupInstallPrompt() {
+            if (window.navigator.standalone === true) {
+                console.log('✓ Running as PWA');
+            }
+        }
+
+        // Games Rendering
+        function renderGames() {
+            const grid = document.getElementById('gamesGrid');
+            grid.innerHTML = GAMES.map((game, idx) => `
+                <div class="game-card" onclick="playGame('${game.id}', ${idx})">
+                    <div class="game-icon">${game.icon}</div>
+                    <div class="game-name">${game.name}</div>
+                </div>
+            `).join('');
+        }
+
+        // Game Play
+        function playGame(gameId, index) {
+            stars += 10;
+            saveStars();
+            updateStarsDisplay();
+            alert(`🎮 ${GAMES[index].name} - +10 ⭐`);
+        }
+
+        // Stars Management
+        function loadStars() {
+            stars = parseInt(localStorage.getItem('ersenbox_stars') || '0');
+            updateStarsDisplay();
+        }
+
+        function saveStars() {
+            localStorage.setItem('ersenbox_stars', stars);
+        }
+
+        function updateStarsDisplay() {
+            document.getElementById('stars').textContent = stars;
+        }
+
+        // Language Toggle
+        function toggleLanguage() {
+            const langs = ['de', 'tr', 'en'];
+            const idx = (langs.indexOf(currentLanguage) + 1) % langs.length;
+            currentLanguage = langs[idx];
+            const flagMap = { de: 'DE', tr: 'TR', en: 'EN' };
+            alert(`🌐 Sprache: ${flagMap[currentLanguage]}`);
+        }
+
+        // Dark Mode
+        function toggleDarkMode() {
+            document.body.style.opacity = '0.5';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 300);
+        }
+
+        // QR Code
+        function showQRCode() {
+            const modal = document.getElementById('qrModal');
+            const container = document.getElementById('qrCodeContainer');
+            container.innerHTML = '<div class="loading">⏳</div>';
+            
+            // Create QR Code (using simple data URI)
+            const qrData = encodeURIComponent('https://ersenbox-spiele.pages.dev/');
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${qrData}`;
+            
+            const img = new Image();
+            img.onload = () => {
+                container.innerHTML = '';
+                container.appendChild(img);
+            };
+            img.src = qrUrl;
+            
+            modal.classList.add('active');
+        }
+
+        function closeQRModal() {
+            document.getElementById('qrModal').classList.remove('active');
+        }
+
+        // Background Image
+        function setBackgroundImage() {
+            const bgImages = [
+                '20-bg-light-mode',
+                '21-bg-dark-mode',
+                '18-bg-menu',
+                '19-bg-gameplay'
+            ];
+            const randomBg = bgImages[Math.floor(Math.random() * bgImages.length)];
+            // Background can be set via CSS or image loading
+        }
+
+        // Close modal on background click
+        document.getElementById('qrModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('qrModal')) {
+                closeQRModal();
+            }
+        });
+    </script>
+</body>
+</html>
