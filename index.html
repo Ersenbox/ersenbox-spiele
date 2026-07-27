@@ -1,427 +1,925 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ERSENBOX SPIELE PRO - 121 Unique Games</title>
+    <title>Bini ABC - Kids Learning App (PWA)</title>
+    <meta name="theme-color" content="#AB47BC">
+    <meta name="description" content="Çocuklar için İnteraktif Harf Öğrenme, Yazma, Oyunlar ve Sesli ABC Eğitimi">
+    <link rel="manifest" href="data:application/json;charset=utf-8,%7B%22name%22%3A%22Bini%20ABC%22%2C%22short_name%22%3A%22BiniABC%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23F3E5F5%22%2C%22theme_color%22%3A%22%23AB47BC%22%7D">
+    
     <style>
-        /* --- ERSENBOX PRO DESIGN SYSTEM (Mevcut Yapı Korundu) --- */
         :root {
-            --navy: #0D1B2A; --gold: #D4AF37; --pink: #FFB6C1; 
-            --lila: #DDA0DD; --blau: #87CEEB; --gelb: #FFE4B5;
-            --glass-bg: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --shadow-soft: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            --primary: #AB47BC;
+            --primary-dark: #7B1FA2;
+            --accent: #FFB300;
+            --bg-grad-1: #F3E5F5;
+            --bg-grad-2: #FFF176;
+            --font-family: 'Comic Sans MS', 'Chalkboard SE', 'Fredoka', cursive, sans-serif;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
-        
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
-            margin: 0; padding: 0;
-            background-color: var(--navy); color: white;
-            overflow-x: hidden; min-height: 100vh;
-            transition: background 0.5s ease;
+            font-family: var(--font-family);
+            background: linear-gradient(135deg, var(--bg-grad-1), var(--bg-grad-2));
+            min-height: 100vh;
+            color: #37474F;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* ARKA PLANLAR (Base64/URL Entegrasyonu Hazır) */
-        .bg-main { 
-            background-image: url('https://www.genspark.ai/api/files/s/epYoY19Q?cache_control=3600'); 
-            background-size: cover; background-position: center; background-attachment: fixed; 
-        }
-        .bg-game { 
-            background-image: url('https://www.genspark.ai/api/files/s/KDY3pQxu?cache_control=3600'); 
-            background-size: cover; background-position: center; 
-        }
-
-        /* HEADER & NAV (Mevcut Yapı) */
         header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 20px; background: rgba(13, 27, 42, 0.9);
-            backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100;
-            border-bottom: 2px solid var(--gold);
-        }
-        .logo-text { font-weight: 900; font-size: 1.4rem; color: var(--gold); text-shadow: 2px 2px 0px #000; }
-        
-        .xp-container {
-            background: linear-gradient(90deg, #ff9a9e 0%, #fecfef 100%);
-            padding: 8px 20px; border-radius: 50px; display: flex; gap: 15px;
-            font-weight: bold; color: #333; border: 2px solid white;
-            box-shadow: 0 4px 15px rgba(255, 182, 193, 0.4);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        /* HERO SECTION */
-        #hero { text-align: center; padding: 40px 20px; }
-        h1 { 
-            font-size: 2.5rem; margin: 0; 
-            background: linear-gradient(to right, var(--gold), var(--pink), var(--blau));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0px 4px 10px rgba(0,0,0,0.5));
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--primary-dark);
         }
 
-        /* FİLTRE BAR */
-        .filter-bar {
-            display: flex; gap: 10px; overflow-x: auto; padding: 10px 20px; margin-bottom: 10px;
-            scrollbar-width: none;
-        }
-        .filter-btn {
-            background: var(--glass-bg); border: 1px solid var(--glass-border);
-            color: white; padding: 10px 20px; border-radius: 30px; white-space: nowrap;
-            cursor: pointer; font-weight: bold; transition: all 0.3s;
-        }
-        .filter-btn.active, .filter-btn:hover { background: var(--gold); color: var(--navy); border-color: var(--gold); }
-
-        /* OYUN KARTLARI (Glassmorphism + 3D Tilt) */
-        #spiele { padding: 20px; max-width: 1200px; margin: 0 auto; }
-        .game-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px;
-            perspective: 1000px;
+        .controls-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .game-card {
-            background: var(--glass-bg); backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border); border-radius: 20px;
-            padding: 20px 10px; text-align: center; cursor: pointer;
-            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s;
-            box-shadow: var(--shadow-soft); transform-style: preserve-3d;
+        .pill-btn {
+            background: #fff;
+            border: 2px solid #E0E0E0;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            transition: transform 0.1s, background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
-        .game-card:hover { 
-            transform: translateY(-5px) rotateX(5deg); 
-            border-color: var(--gold); background: rgba(255,255,255,0.2); 
-            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.3);
-        }
-        .card-icon { font-size: 2.5rem; margin-bottom: 10px; display: block; transform: translateZ(20px); }
-        .card-title { font-size: 1rem; font-weight: 800; margin: 5px 0; color: white; line-height: 1.2; transform: translateZ(10px); }
-        .card-cat { font-size: 0.7rem; opacity: 0.7; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* OYUN MODAL (PRO UI) */
-        #gameModal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(13, 27, 42, 0.95); z-index: 1000;
-            flex-direction: column; align-items: center; justify-content: center;
-            backdrop-filter: blur(15px);
+        .pill-btn:active {
+            transform: scale(0.95);
         }
+
+        .btn-purple {
+            background: var(--primary);
+            color: white;
+            border: none;
+        }
+
+        .btn-orange {
+            background: #FF9800;
+            color: white;
+            border: none;
+        }
+
+        .screen {
+            display: none;
+            flex: 1;
+            padding: 16px;
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .screen.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hero Banner */
+        .hero-banner {
+            background: linear-gradient(135deg, #7E57C2, #AB47BC);
+            border-radius: 20px;
+            padding: 18px;
+            color: white;
+            margin-bottom: 16px;
+            box-shadow: 0 6px 16px rgba(123, 31, 162, 0.25);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .hero-banner h2 { font-size: 22px; margin-bottom: 4px; }
+        .hero-banner p { font-size: 13px; opacity: 0.9; }
+
+        /* Navigation Grid */
+        .modes-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .mode-card {
+            background: white;
+            border-radius: 16px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+            transition: transform 0.2s;
+        }
+
+        .mode-card:hover { transform: translateY(-4px); }
+        .mode-card:active { transform: scale(0.95); }
+        .mode-card .icon { font-size: 28px; margin-bottom: 4px; }
+        .mode-card .title { font-size: 12px; font-weight: bold; color: #455A64; }
+
+        /* Alphabet Grid */
+        .alphabet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 12px;
+            padding-bottom: 30px;
+        }
+
+        .letter-card {
+            background: white;
+            border-radius: 16px;
+            padding: 12px 8px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            position: relative;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .letter-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+        }
+
+        .letter-char {
+            font-size: 42px;
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 4px;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+        }
+
+        .letter-sub {
+            font-size: 11px;
+            font-weight: bold;
+            color: #607D8B;
+        }
+
+        .stars-row {
+            margin-top: 4px;
+            font-size: 10px;
+            color: #FFB300;
+        }
+
+        /* Screen Back Header */
+        .nav-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .back-btn {
+            background: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        }
+
+        /* Tracing Screen */
+        .canvas-container {
+            background: white;
+            border-radius: 24px;
+            padding: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        canvas {
+            background: #FAF8F5;
+            border-radius: 16px;
+            touch-action: none;
+            cursor: crosshair;
+        }
+
+        /* Games Screens */
+        .game-box {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            text-align: center;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Balloon Pop */
+        .balloon-stage {
+            width: 100%;
+            height: 380px;
+            background: linear-gradient(180deg, #E1F5FE, #B3E5FC);
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .balloon {
+            width: 70px;
+            height: 85px;
+            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 900;
+            color: white;
+            cursor: pointer;
+            box-shadow: inset -6px -6px 0 rgba(0,0,0,0.15);
+            animation: floatUp 5s linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(400px); }
+            100% { transform: translateY(-100px); }
+        }
+
+        /* Pairs Match */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .card-flip {
+            height: 100px;
+            background: #81C784;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .card-flip.matched {
+            background: #C8E6C9;
+            color: #2E7D32;
+        }
+
+        /* Feed Monster */
+        .monster-box {
+            width: 150px;
+            height: 150px;
+            background: #AB47BC;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+            transition: transform 0.2s;
+        }
+
+        .monster-eyes {
+            display: flex;
+            gap: 16px;
+        }
+        .eye {
+            width: 28px;
+            height: 28px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .pupil {
+            width: 12px;
+            height: 12px;
+            background: black;
+            border-radius: 50%;
+        }
+
+        .mouth {
+            width: 60px;
+            height: 24px;
+            background: #4A148C;
+            border-radius: 12px;
+            margin-top: 12px;
+            transition: height 0.2s;
+        }
+
+        .mouth.open {
+            height: 50px;
+        }
+
+        /* Modals / Parent Gate */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
         .modal-content {
-            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,240,245,0.95));
-            border-radius: 30px; padding: 30px; width: 95%; max-width: 600px;
-            text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-            border: 4px solid var(--gold); animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            color: #333; position: relative; overflow: hidden;
-        }
-        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        .mascot-display { 
-            width: 100px; height: 100px; margin: -70px auto 10px; 
-            background-size: contain; background-repeat: no-repeat; background-position: center;
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.2)); transition: transform 0.3s;
+            background: white;
+            padding: 24px;
+            border-radius: 20px;
+            max-width: 360px;
+            width: 90%;
+            text-align: center;
         }
 
-        .game-area { min-height: 150px; display: flex; align-items: center; justify-content: center; font-size: 3rem; margin: 20px 0; font-weight: bold; color: var(--navy); flex-wrap: wrap; }
-        
-        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
-        .btn-option {
-            background: white; border: 3px solid var(--blau); border-radius: 18px;
-            padding: 15px; font-size: 1.3rem; font-weight: bold; color: var(--navy);
-            cursor: pointer; box-shadow: 0 5px 0 #5dade2; transition: all 0.1s;
-        }
-        .btn-option:active { transform: translateY(5px); box-shadow: 0 0 0 #5dade2; }
-
-        .btn-close {
-            margin-top: 25px; background: #ff6b6b; color: white; border: none;
-            padding: 12px 30px; border-radius: 50px; font-size: 1.1rem; font-weight: bold;
-            cursor: pointer; box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        input[type="number"] {
+            padding: 10px;
+            font-size: 18px;
+            border: 2px solid #DDD;
+            border-radius: 10px;
+            width: 100px;
+            text-align: center;
+            margin: 12px 0;
         }
 
-        /* LEVEL UP OVERLAY */
-        .level-up-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(212, 175, 55, 0.95); display: flex; flex-direction: column;
-            align-items: center; justify-content: center; border-radius: 26px; z-index: 10;
-            animation: popIn 0.5s; display: none;
+        .sticker-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            width: 100%;
         }
-        @keyframes popIn { 0% { transform: scale(0); } 80% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
-        @media (max-width: 480px) {
-            h1 { font-size: 2rem; } .game-grid { grid-template-columns: 1fr 1fr; }
-            .modal-content { padding: 20px; width: 98%; } .game-area { font-size: 2.5rem; }
+        .sticker-item {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+            font-size: 40px;
         }
     </style>
 </head>
-<body class="bg-main">
+<body>
 
-    <!-- MEVCUT HEADER YAPISI KORUNDU -->
+    <!-- Top Navigation Bar -->
     <header>
-        <div class="logo-text">ERSENBOX SPIELE</div>
-        <div class="xp-container">
-            <span>⭐ <span id="xpDisplay">0</span> XP</span>
-            <span>|</span>
-            <span>🔥 <span id="streakDisplay">0</span></span>
-            <span>|</span>
-            <span> Lvl <span id="levelDisplay">1</span></span>
+        <div class="logo-group">
+            <span>🎨</span> Bini ABC
+        </div>
+        <div class="controls-group">
+            <button class="pill-btn btn-purple" id="caseToggleBtn" onclick="toggleCase()">ABC</button>
+            <div class="pill-btn btn-orange">⭐ <span id="starCount">15</span></div>
+            <button class="pill-btn" onclick="openParentGate()">⚙️</button>
         </div>
     </header>
 
-    <!-- HERO SECTION -->
-    <section id="hero">
-        <h1> ERSENBOX SPIELE 🎉</h1>
-        <p style="opacity:0.9; margin-top:10px;">121+ BENZERSİZ Oyun | Gelişmiş Matematik | 4 Dil Desteği</p>
-    </section>
-
-    <!-- OYUNLAR & FİLTRELER -->
-    <section id="spiele">
-        <div class="filter-bar">
-            <button class="filter-btn active" onclick="filterGames('all')"> Alle</button>
-            <button class="filter-btn" onclick="filterGames('abc')"> ABC</button>
-            <button class="filter-btn" onclick="filterGames('mathe')"> Zahlen</button>
-            <button class="filter-btn" onclick="filterGames('tiere')">🦁 Tiere</button>
-            <button class="filter-btn" onclick="filterGames('kreativ')"> Kreativ</button>
-            <button class="filter-btn" onclick="filterGames('logik')"> Logik</button>
-        </div>
-        <div class="game-grid" id="gameGrid">
-            <!-- Oyunlar JS ile buraya yüklenecek -->
-        </div>
-    </section>
-
-    <!-- DİNAMİK OYUN MODAL -->
-    <div id="gameModal">
-        <div class="modal-content">
-            <div id="levelUpOverlay" class="level-up-overlay">
-                <div style="font-size:4rem;">🏆</div>
-                <h2 style="color:white; margin:10px 0;">LEVEL UP!</h2>
-                <p style="color:white;">Du bist jetzt Level <span id="newLevelNum">2</span>!</p>
+    <!-- 1. HOME SCREEN -->
+    <div id="screenHome" class="screen active">
+        <div class="hero-banner">
+            <div>
+                <h2>Play & Learn ABC!</h2>
+                <p>Interactive Letters, Phonics & Fun Games</p>
             </div>
+            <div style="font-size: 48px;">🦁</div>
+        </div>
 
-            <div id="mascotImg" class="mascot-display"></div>
-            <h2 id="gameTitle" style="color:var(--navy); margin:0;">Spiel Titel</h2>
-            <div id="gameContent" class="game-area"></div>
-            <div id="gameOptions" class="options-grid"></div>
-            <button class="btn-close" onclick="closeGame()">❌ Schließen</button>
+        <div class="modes-grid">
+            <div class="mode-card" onclick="openScreen('screenTrace')">
+                <div class="icon">✏️</div>
+                <div class="title">Trace</div>
+            </div>
+            <div class="mode-card" onclick="openScreen('screenSpelling')">
+                <div class="icon">🧩</div>
+                <div class="title">Spelling</div>
+            </div>
+            <div class="mode-card" onclick="openScreen('screenBalloons')">
+                <div class="icon">🎈</div>
+                <div class="title">Balloons</div>
+            </div>
+            <div class="mode-card" onclick="openScreen('screenPairs')">
+                <div class="icon">🃏</div>
+                <div class="title">Pairs Match</div>
+            </div>
+            <div class="mode-card" onclick="openScreen('screenMonster')">
+                <div class="icon">👾</div>
+                <div class="title">Feed Monster</div>
+            </div>
+            <div class="mode-card" onclick="openScreen('screenStickers')">
+                <div class="icon">🏆</div>
+                <div class="title">Stickers</div>
+            </div>
+        </div>
+
+        <h3 style="margin-bottom: 12px; color: #455A64;">Live Alphabet Characters:</h3>
+        <div class="alphabet-grid" id="alphabetGrid"></div>
+    </div>
+
+    <!-- 2. TRACING SCREEN -->
+    <div id="screenTrace" class="screen">
+        <div class="nav-header">
+            <button class="back-btn" onclick="openScreen('screenHome')">⬅️</button>
+            <h2 id="tracingTitle">Trace Letter A</h2>
+            <button class="pill-btn btn-purple" onclick="clearCanvas()">Clear 🔄</button>
+        </div>
+        <div class="canvas-container">
+            <canvas id="tracingCanvas" width="300" height="340"></canvas>
+            <div style="display: flex; gap: 10px; margin-top: 14px;">
+                <button class="pill-btn" onclick="prevLetter()">◀ Prev</button>
+                <button class="pill-btn btn-orange" onclick="nextLetter()">Next ▶</button>
+            </div>
         </div>
     </div>
 
-    <!-- AKILLI OYUN MOTORU (121 BENZERSİZ OYUN) -->
+    <!-- 3. SPELLING PUZZLE SCREEN -->
+    <div id="screenSpelling" class="screen">
+        <div class="nav-header">
+            <button class="back-btn" onclick="openScreen('screenHome')">⬅️</button>
+            <h2>Word Puzzle 🧩</h2>
+            <div></div>
+        </div>
+        <div class="game-box">
+            <div id="puzzleEmoji" style="font-size: 80px; margin-bottom: 12px;">🍎</div>
+            <div id="puzzleWordSlots" style="display: flex; gap: 10px; font-size: 36px; font-weight: 900; margin-bottom: 24px;"></div>
+            <div id="puzzleTiles" style="display: flex; gap: 12px;"></div>
+        </div>
+    </div>
+
+    <!-- 4. BALLOON POP SCREEN -->
+    <div id="screenBalloons" class="screen">
+        <div class="nav-header">
+            <button class="back-btn" onclick="openScreen('screenHome')">⬅️</button>
+            <h2>Pop Balloons! 🎈</h2>
+            <div>Score: <b id="balloonScore">0</b></div>
+        </div>
+        <div class="game-box" style="padding: 10px;">
+            <div class="balloon-stage" id="balloonStage"></div>
+        </div>
+    </div>
+
+    <!-- 5. PAIRS MATCH SCREEN -->
+    <div id="screenPairs" class="screen">
+        <div class="nav-header">
+            <button class="back-btn" onclick="openScreen('screenHome')">⬅️</button>
+            <h2>Pairs Matching 🃏</h2>
+            <button class="pill-btn" onclick="initPairsGame()">Reset 🔄</button>
+        </div>
+        <div class="game-box">
+            <div class="cards-grid" id="cardsGrid"></div>
+        </div>
+    </div>
+
+    <!-- 6. FEED MONSTER SCREEN -->
+    <div id="screenMonster" class="screen">
+        <div class="nav-header">
+            <button class="back-btn" onclick="openScreen('screenHome')">⬅️</button>
+            <h2>Feed the Monster! 👾</h2>
+            <div>Score: <b id="monsterScore">0</b></div>
+        </div>
+        <div class="game-box">
+            <h3 id="monsterPrompt" style="color: #E65100;">Feed me letter A!</h3>
+            <div class="monster-box" id="monsterBody">
+                <div class="monster-eyes">
+                    <div class="eye"><div class="pupil"></div></div>
+                    <div class="eye"><div class="pupil"></div></div>
+                </div>
+                <div class="mouth" id="monsterMouth"></div>
+            </div>
+            <div id="monsterChoices" style="display: flex; gap: 16px; margin-top: 16px;"></div>
+        </div>
+    </div>
+
+    <!-- 7. STICKERS SCREEN -->
+    <div id="screenStickers" class="screen">
+        <div class="nav-header">
+            <button class="back-btn" onclick="openScreen('screenHome')">⬅️</button>
+            <h2>Sticker Book 🏆</h2>
+            <div></div>
+        </div>
+        <div class="sticker-grid" id="stickerGrid"></div>
+    </div>
+
+    <!-- Parent Gate Modal -->
+    <div class="modal-overlay" id="parentModal">
+        <div class="modal-content">
+            <h3>👨‍👩‍👧 Parent Gate</h3>
+            <p id="mathQuestion" style="margin-top: 8px;">Solve: 3 + 4 = ?</p>
+            <input type="number" id="mathAnswer" placeholder="Answer">
+            <br>
+            <button class="pill-btn btn-purple" onclick="checkParentGate()">Submit</button>
+            <button class="pill-btn" onclick="closeParentGate()" style="margin-top: 8px;">Cancel</button>
+        </div>
+    </div>
+
     <script>
-        // --- STATE MANAGEMENT ---
-        const state = {
-            xp: parseInt(localStorage.getItem('ersenbox_xp')) || 0,
-            streak: parseInt(localStorage.getItem('ersenbox_streak')) || 0,
-            level: Math.floor((parseInt(localStorage.getItem('ersenbox_xp')) || 0) / 100) + 1,
-            currentGame: null,
-            lastAnswer: null,
-            lang: 'DE' // TR, DE, EN, FR
-        };
-
-        // --- ASSET MAP (Verdiğin URL'ler) ---
-        const assets = {
-            mascot: {
-                happy: 'https://www.genspark.ai/api/files/s/ljlqTRpR?cache_control=3600',
-                curious: 'https://www.genspark.ai/api/files/s/to87zHDI?cache_control=3600',
-                excited: 'https://www.genspark.ai/api/files/s/b2XEo6r2?cache_control=3600',
-                reading: 'https://www.genspark.ai/api/files/s/kcNqxlO2?cache_control=3600'
-            }
-        };
-
-        // --- DİL VERİTABANI (Dinamik İçerik İçin) ---
-        const i18n = {
-            DE: { fruits: ['Apfel','Banane','Traube','Orange','Birne'], animals: ['Löwe','Elefant','Fuchs','Hase','Katze'], colors: ['Rot','Blau','Grün','Gelb'] },
-            TR: { fruits: ['Elma','Muz','Üzüm','Portakal','Armut'], animals: ['Aslan','Fil','Tilki','Tavşan','Kedi'], colors: ['Kırmızı','Mavi','Yeşil','Sarı'] },
-            EN: { fruits: ['Apple','Banana','Grape','Orange','Pear'], animals: ['Lion','Elephant','Fox','Rabbit','Cat'], colors: ['Red','Blue','Green','Yellow'] },
-            FR: { fruits: ['Pomme','Banane','Raisin','Orange','Poire'], animals: ['Lion','Éléphant','Renard','Lapin','Chat'], colors: ['Rouge','Bleu','Vert','Jaune'] }
-        };
-
-        // --- 121 BENZERSİZ OYUN ŞABLONU (TEKRARSIZ) ---
-        // Her oyun unique bir ID ve generator fonksiyonuna sahip
-        const gameDB = [
-            // --- ABC (25 Unique Game) ---
-            {id:'abc_01', cat:'abc', icon:'🅰️', title:'Buchstabe A-Z', gen:()=>{const l=String.fromCharCode(65+Math.floor(Math.random()*26)); return {q:l, a:l, opts:[l,...getRandomLetters(3)]}}},
-            {id:'abc_02', cat:'abc', icon:'', title:'Tiernamen (Lang)', gen:()=>{const list=i18n[state.lang].animals; const c=list[Math.floor(Math.random()*list.length)]; return {q:c[0], a:c, opts:[c,...list.filter(x=>x!==c).slice(0,3)]}}},
-            {id:'abc_03', cat:'abc', icon:'🍎', title:'Obst Namen (Lang)', gen:()=>{const list=i18n[state.lang].fruits; const c=list[Math.floor(Math.random()*list.length)]; return {q:c[0], a:c, opts:[c,...list.filter(x=>x!==c).slice(0,3)]}}},
-            {id:'abc_04', cat:'abc', icon:'🚗', title:'Fahrzeuge DE', gen:()=>{const items=['Auto','Bus','Zug','Flugzeug']; const c=items[Math.floor(Math.random()*items.length)]; return {q:c, a:c, opts:[c,...items.filter(x=>x!==c).slice(0,3)]}}},
-            {id:'abc_05', cat:'abc', icon:'', title:'Instrumente', gen:()=>{const items=['Klavier','Gitarre','Trommel','Flöte']; const c=items[Math.floor(Math.random()*items.length)]; return {q:c, a:c, opts:[c,...items.filter(x=>x!==c).slice(0,3)]}}},
-            
-            // --- MATHE (30 Unique Game - Gelişmiş) ---
-            {id:'math_01', cat:'mathe', icon:'➕', title:'Addition (1-10)', gen:()=>{const a=Math.floor(Math.random()*10)+1; const b=Math.floor(Math.random()*10)+1; return {q:`${a} + ${b}`, a:a+b, opts:[a+b, a+b+1, a+b-1, a+b+2]}}},
-            {id:'math_02', cat:'mathe', icon:'', title:'Subtraktion (1-10)', gen:()=>{const a=Math.floor(Math.random()*10)+5; const b=Math.floor(Math.random()*a)+1; return {q:`${a} - ${b}`, a:a-b, opts:[a-b, a-b+1, a-b-1, a-b+2]}}},
-            {id:'math_03', cat:'mathe', icon:'✖️', title:'Multiplikation (1-10)', gen:()=>{const a=Math.floor(Math.random()*10)+1; const b=Math.floor(Math.random()*10)+1; return {q:`${a} × ${b}`, a:a*b, opts:[a*b, a*b+a, a*b-b, a*b+1]}}},
-            {id:'math_04', cat:'mathe', icon:'➗', title:'Division (Einfach)', gen:()=>{const b=Math.floor(Math.random()*9)+2; const a=b*(Math.floor(Math.random()*9)+1); return {q:`${a} ÷ ${b}`, a:a/b, opts:[a/b, a/b+1, a/b-1, a/b+2]}}},
-            {id:'math_05', cat:'mathe', icon:'🔢', title:'Vergleichen (< >)', gen:()=>{const a=Math.floor(Math.random()*20)+1; const b=Math.floor(Math.random()*20)+1; const ans = a>b ? '>' : '<'; return {q:`${a} ? ${b}`, a:ans, opts:['>','<','=']}}},
-            {id:'math_06', cat:'mathe', icon:'🍪', title:'Kekse zählen', gen:()=>{const n=Math.floor(Math.random()*10)+1; return {q:''.repeat(n), a:n, opts:[n, n+1, n-1, n+2]}}},
-            {id:'math_07', cat:'mathe', icon:'', title:'Uhrzeit lesen', gen:()=>{const h=Math.floor(Math.random()*12)+1; return {q:`${h}:00 Uhr`, a:h, opts:[h, h+1, h-1, h+2]}}},
-            {id:'math_08', cat:'mathe', icon:'💯', title:'Basamak (10/100)', gen:()=>{const nums=[10,100,1000]; const n=nums[Math.floor(Math.random()*nums.length)]; return {q:`${n} = ?`, a:n, opts:[n, n*10, n/10, n+1]}}},
-
-            // --- TIERE (20 Unique Game) ---
-            {id:'tier_01', cat:'tiere', icon:'🐶', title:'Tierlaute', gen:()=>{const items=[{n:'Hund',s:'Wuff'},{n:'Katze',s:'Miau'},{n:'Kuh',s:'Muh'}]; const c=items[Math.floor(Math.random()*items.length)]; return {q:c.s+'?', a:c.n, opts:[c.n,...i18n[state.lang].animals.filter(x=>x!==c.n).slice(0,3)]}}},
-            {id:'tier_02', cat:'tiere', icon:'', title:'Groß oder Klein?', gen:()=>{const items=[{n:'Elefant',s:'Groß'},{n:'Maus',s:'Klein'}]; const c=items[Math.floor(Math.random()*items.length)]; return {q:c.n, a:c.s, opts:[c.s, c.s==='Groß'?'Klein':'Groß','Mittel']}}},
-            {id:'tier_03', cat:'tiere', icon:'', title:'Was frisst das Tier?', gen:()=>{const items=[{n:'Hase',f:'Karotte'},{n:'Hund',f:'Knochen'}]; const c=items[Math.floor(Math.random()*items.length)]; return {q:c.n, a:c.f, opts:[c.f,'Milch','Gras','Nüsse']}}},
-
-            // --- KREATIV & LOGIK (20 Unique Game) ---
-            {id:'col_01', cat:'kreativ', icon:'🎨', title:'Farben mischen', gen:()=>{return {q:'Rot + Gelb = ?', a:'Orange', opts:['Orange','Grün','Lila','Braun']}}},
-            {id:'log_01', cat:'logik', icon:'', title:'Formen erkennen', gen:()=>{const shapes=['Kreis','Quadrat','Dreieck']; const c=shapes[Math.floor(Math.random()*shapes.length)]; return {q:c, a:c, opts:[c,...shapes.filter(s=>s!==c)]}}},
-            {id:'log_02', cat:'logik', icon:'🔄', title:'Muster fortsetzen', gen:()=>{const patterns=['🔴🔵🔴?','⭐🌙⭐?']; const p=patterns[Math.floor(Math.random()*patterns.length)]; const ans=p.includes('🔴')?'🔵':'🌙'; return {q:p, a:ans, opts:[ans,'⬛','','🟣']}}}
+        const alphabetData = [
+            { char: 'A', word: 'Apple', emoji: '🍎', color: '#FF5252' },
+            { char: 'B', word: 'Bear', emoji: '🐻', color: '#448AFF' },
+            { char: 'C', word: 'Cat', emoji: '🐱', color: '#FFB300' },
+            { char: 'D', word: 'Dog', emoji: '🐶', color: '#66BB6A' },
+            { char: 'E', word: 'Elephant', emoji: '🐘', color: '#AB47BC' },
+            { char: 'F', word: 'Frog', emoji: '🐸', color: '#26A69A' },
+            { char: 'G', word: 'Giraffe', emoji: '🦒', color: '#FFA726' },
+            { char: 'H', word: 'Hippo', emoji: '🦛', color: '#EC407A' },
+            { char: 'I', word: 'Iguana', emoji: '🦎', color: '#8D6E63' },
+            { char: 'J', word: 'Jellyfish', emoji: '🪼', color: '#78909C' },
+            { char: 'K', word: 'Kangaroo', emoji: '🦘', color: '#D4E157' },
+            { char: 'L', word: 'Lion', emoji: '🦁', color: '#FF7043' },
+            { char: 'M', word: 'Monkey', emoji: '🐒', color: '#8D6E63' },
+            { char: 'N', word: 'Nest', emoji: '🪹', color: '#26C6DA' },
+            { char: 'O', word: 'Owl', emoji: '🦉', color: '#5C6BC0' },
+            { char: 'P', word: 'Penguin', emoji: '🐧', color: '#42A5F5' },
+            { char: 'Q', word: 'Queen', emoji: '👑', color: '#AB47BC' },
+            { char: 'R', word: 'Rabbit', emoji: '🐰', color: '#FF4081' },
+            { char: 'S', word: 'Sun', emoji: '☀️', color: '#FFCA28' },
+            { char: 'T', word: 'Tiger', emoji: '🐯', color: '#FF7043' },
+            { char: 'U', word: 'Umbrella', emoji: '☂️', color: '#7E57C2' },
+            { char: 'V', word: 'Volcano', emoji: '🌋', color: '#EF5350' },
+            { char: 'W', word: 'Whale', emoji: '🐳', color: '#29B6F6' },
+            { char: 'X', word: 'Xylophone', emoji: '🎼', color: '#9CCC65' },
+            { char: 'Y', word: 'Yak', emoji: '🐂', color: '#8D6E63' },
+            { char: 'Z', word: 'Zebra', emoji: '🦓', color: '#78909C' }
         ];
 
-        // 121 Oyuna Tamamlamak İçin Unique Çoğaltma (Demo Amaçlı)
-        // Gerçek projede buraya 121 farklı satır eklenir.
-        while(gameDB.length < 121) {
-            const base = gameDB[Math.floor(Math.random() * gameDB.length)];
-            gameDB.push({...base, id: base.id + '_' + gameDB.length});
-        }
+        let isUppercase = true;
+        let starCount = 15;
+        let selectedIndex = 0;
 
-        // Yardımcı Fonksiyonlar
-        function getRandomLetters(n){let r=[];while(r.length<n){let l=String.fromCharCode(65+Math.floor(Math.random()*26));if(!r.includes(l))r.push(l);}return r;}
-
-        // --- CORE FUNCTIONS ---
-        function updateUI() {
-            document.getElementById('xpDisplay').innerText = state.xp;
-            document.getElementById('streakDisplay').innerText = state.streak;
-            document.getElementById('levelDisplay').innerText = state.level;
-            localStorage.setItem('ersenbox_xp', state.xp);
-            localStorage.setItem('ersenbox_streak', state.streak);
-        }
-
-        function setMascot(emotion) {
-            const el = document.getElementById('mascotImg');
-            el.style.backgroundImage = `url('${assets.mascot[emotion]}')`;
-            if(emotion === 'excited') {
-                el.style.transform = "scale(1.2) rotate(5deg)";
-                setTimeout(() => el.style.transform = "scale(1) rotate(0)", 500);
+        function speak(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utter = new SpeechSynthesisUtterance(text);
+                utter.rate = 0.9;
+                utter.pitch = 1.1;
+                window.speechSynthesis.speak(utter);
             }
         }
 
-        function renderGames(filter='all') {
-            const grid = document.getElementById('gameGrid');
+        function toggleCase() {
+            isUppercase = !isUppercase;
+            document.getElementById('caseToggleBtn').innerText = isUppercase ? 'ABC' : 'abc';
+            renderHomeAlphabet();
+        }
+
+        function openScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+
+            if (screenId === 'screenTrace') initTracing();
+            if (screenId === 'screenSpelling') initSpellingPuzzle();
+            if (screenId === 'screenBalloons') initBalloonGame();
+            if (screenId === 'screenPairs') initPairsGame();
+            if (screenId === 'screenMonster') initMonsterGame();
+            if (screenId === 'screenStickers') renderStickers();
+        }
+
+        function renderHomeAlphabet() {
+            const grid = document.getElementById('alphabetGrid');
             grid.innerHTML = '';
-            const filtered = filter === 'all' ? gameDB : gameDB.filter(g => g.cat === filter);
-            
-            filtered.forEach(game => {
+            alphabetData.forEach((item, index) => {
+                const charDisplay = isUppercase ? item.char : item.char.toLowerCase();
                 const card = document.createElement('div');
-                card.className = 'game-card';
+                card.className = 'letter-card';
                 card.innerHTML = `
-                    <span class="card-icon">${game.icon}</span>
-                    <div class="card-title">${game.title}</div>
-                    <div class="card-cat">${game.cat.toUpperCase()}</div>
+                    <div class="letter-char" style="color: ${item.color}">${charDisplay}</div>
+                    <div class="letter-sub">${charDisplay} is for ${item.word} ${item.emoji}</div>
+                    <div class="stars-row">⭐⭐⭐</div>
                 `;
-                card.onclick = () => openGame(game);
+                card.onclick = () => {
+                    selectedIndex = index;
+                    speak(`${charDisplay}! ${item.word}!`);
+                    openScreen('screenTrace');
+                };
                 grid.appendChild(card);
             });
         }
 
-        function filterGames(cat) {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
-            renderGames(cat);
+        let canvas, ctx, isTracing = false, tracePointsCount = 0;
+
+        function initTracing() {
+            canvas = document.getElementById('tracingCanvas');
+            ctx = canvas.getContext('2d');
+            const item = alphabetData[selectedIndex];
+            const charDisplay = isUppercase ? item.char : item.char.toLowerCase();
+
+            document.getElementById('tracingTitle').innerText = `Trace Letter ${charDisplay}`;
+            speak(`Trace letter ${charDisplay}!`);
+            clearCanvas();
+
+            canvas.onpointerdown = (e) => { isTracing = true; drawPoint(e); };
+            canvas.onpointermove = (e) => { if (isTracing) drawPoint(e); };
+            canvas.onpointerup = () => { isTracing = false; checkTraceComplete(); };
         }
 
-        function openGame(game) {
-            state.currentGame = game;
-            const modal = document.getElementById('gameModal');
-            modal.style.display = 'flex';
-            document.body.className = 'bg-game';
-            
-            document.getElementById('gameTitle').innerText = game.title;
-            setMascot('curious');
-            loadRound();
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const item = alphabetData[selectedIndex];
+            const charDisplay = isUppercase ? item.char : item.char.toLowerCase();
+
+            ctx.fillStyle = '#E0E0E0';
+            ctx.font = 'bold 220px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(charDisplay, canvas.width / 2, canvas.height / 2);
+
+            ctx.strokeStyle = item.color;
+            ctx.setLineDash([12, 12]);
+            ctx.lineWidth = 16;
+            ctx.strokeText(charDisplay, canvas.width / 2, canvas.height / 2);
+            ctx.setLineDash([]);
+            tracePointsCount = 0;
         }
 
-        function loadRound() {
-            const game = state.currentGame;
-            const data = game.gen(); // Rastgele içerik üret
-            state.lastAnswer = data.a;
+        function drawPoint(e) {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
 
-            const contentEl = document.getElementById('gameContent');
-            const optionsEl = document.getElementById('gameOptions');
-            
-            contentEl.innerHTML = data.q;
-            optionsEl.innerHTML = '';
+            ctx.fillStyle = '#FFD54F';
+            ctx.beginPath();
+            ctx.arc(x, y, 16, 0, Math.PI * 2);
+            ctx.fill();
+            tracePointsCount++;
+        }
 
-            // Seçenekleri karıştır
-            const shuffledOpts = [...data.opts].sort(() => Math.random() - 0.5);
+        function checkTraceComplete() {
+            if (tracePointsCount > 25) {
+                starCount += 1;
+                document.getElementById('starCount').innerText = starCount;
+                speak("Wonderful tracing! Star earned!");
+            }
+        }
 
-            shuffledOpts.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.className = 'btn-option';
-                btn.innerText = opt;
-                btn.onclick = () => checkAnswer(opt);
-                optionsEl.appendChild(btn);
+        function prevLetter() {
+            selectedIndex = (selectedIndex - 1 + alphabetData.length) % alphabetData.length;
+            initTracing();
+        }
+
+        function nextLetter() {
+            selectedIndex = (selectedIndex + 1) % alphabetData.length;
+            initTracing();
+        }
+
+        function initSpellingPuzzle() {
+            const item = alphabetData[selectedIndex];
+            document.getElementById('puzzleEmoji').innerText = item.emoji;
+            speak(`Spell ${item.word}`);
+
+            const slots = document.getElementById('puzzleWordSlots');
+            const tiles = document.getElementById('puzzleTiles');
+            slots.innerHTML = '';
+            tiles.innerHTML = '';
+
+            const word = item.word.toUpperCase();
+            const letters = word.split('');
+            let currentGuessed = new Array(letters.length).fill('_');
+
+            function renderSlots() {
+                slots.innerHTML = currentGuessed.map(l => `<span>${l}</span>`).join(' ');
+            }
+            renderSlots();
+
+            const shuffled = [...letters].sort(() => Math.random() - 0.5);
+            shuffled.forEach(char => {
+                const tile = document.createElement('button');
+                tile.className = 'pill-btn btn-purple';
+                tile.style.fontSize = '24px';
+                tile.innerText = char;
+                tile.onclick = () => {
+                    speak(char);
+                    const emptyIdx = currentGuessed.indexOf('_');
+                    if (emptyIdx !== -1) {
+                        currentGuessed[emptyIdx] = char;
+                        renderSlots();
+                        tile.disabled = true;
+                        tile.style.opacity = '0.3';
+                        if (!currentGuessed.includes('_')) {
+                            speak(`Great spelling! ${item.word}!`);
+                            starCount += 3;
+                            document.getElementById('starCount').innerText = starCount;
+                        }
+                    }
+                };
+                tiles.appendChild(tile);
             });
         }
 
-        function checkAnswer(selected) {
-            const isCorrect = String(selected) === String(state.lastAnswer);
-            
-            if(isCorrect) {
-                state.xp += 10; state.streak++;
-                setMascot('excited');
-                playSound('success');
-                document.getElementById('gameContent').innerHTML = '🎉 SUPER!';
-                document.getElementById('gameContent').style.color = '#2ecc71';
-                
-                const newLevel = Math.floor(state.xp / 100) + 1;
-                if(newLevel > state.level) {
-                    state.level = newLevel;
-                    showLevelUp(newLevel);
-                } else {
-                    setTimeout(loadRound, 1200);
-                }
+        let balloonScore = 0;
+        function initBalloonGame() {
+            const stage = document.getElementById('balloonStage');
+            stage.innerHTML = '';
+            balloonScore = 0;
+            document.getElementById('balloonScore').innerText = balloonScore;
+
+            for (let i = 0; i < 5; i++) {
+                createBalloon(stage);
+            }
+        }
+
+        function createBalloon(stage) {
+            const item = alphabetData[Math.floor(Math.random() * alphabetData.length)];
+            const b = document.createElement('div');
+            b.className = 'balloon';
+            b.style.backgroundColor = item.color;
+            b.style.left = Math.random() * 80 + '%';
+            b.style.animationDuration = (Math.random() * 3 + 4) + 's';
+            b.innerText = isUppercase ? item.char : item.char.toLowerCase();
+
+            b.onclick = () => {
+                speak(item.char);
+                b.style.transform = 'scale(1.4)';
+                b.style.opacity = '0';
+                balloonScore += 5;
+                document.getElementById('balloonScore').innerText = balloonScore;
+                setTimeout(() => {
+                    b.remove();
+                    createBalloon(stage);
+                }, 300);
+            };
+
+            stage.appendChild(b);
+        }
+
+        function initPairsGame() {
+            const grid = document.getElementById('cardsGrid');
+            grid.innerHTML = '';
+            const sample = alphabetData.sort(() => Math.random() - 0.5).slice(0, 4);
+            const deck = [];
+            sample.forEach(s => {
+                deck.push({ char: s.char, display: s.char });
+                deck.push({ char: s.char, display: s.emoji });
+            });
+            deck.sort(() => Math.random() - 0.5);
+
+            let firstCard = null, busy = false;
+
+            deck.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card-flip';
+                card.innerText = '❓';
+
+                card.onclick = () => {
+                    if (busy || card.classList.contains('matched') || card === firstCard) return;
+
+                    card.innerText = item.display;
+                    speak(item.char);
+
+                    if (!firstCard) {
+                        firstCard = card;
+                    } else {
+                        busy = true;
+                        if (firstCard.datasetChar === item.char) {
+                            card.classList.add('matched');
+                            firstCard.classList.add('matched');
+                            speak("Matched!");
+                            firstCard = null;
+                            busy = false;
+                        } else {
+                            setTimeout(() => {
+                                card.innerText = '❓';
+                                firstCard.innerText = '❓';
+                                firstCard = null;
+                                busy = false;
+                            }, 1000);
+                        }
+                    }
+                };
+                card.datasetChar = item.char;
+                grid.appendChild(card);
+            });
+        }
+
+        let monsterScore = 0, monsterTarget = null;
+        function initMonsterGame() {
+            monsterScore = 0;
+            document.getElementById('monsterScore').innerText = monsterScore;
+            nextMonsterRound();
+        }
+
+        function nextMonsterRound() {
+            monsterTarget = alphabetData[Math.floor(Math.random() * alphabetData.length)];
+            const charDisplay = isUppercase ? monsterTarget.char : monsterTarget.char.toLowerCase();
+            document.getElementById('monsterPrompt').innerText = `Feed me letter ${charDisplay}!`;
+            speak(`Feed me letter ${charDisplay}!`);
+
+            const choicesDiv = document.getElementById('monsterChoices');
+            choicesDiv.innerHTML = '';
+
+            const choices = [monsterTarget];
+            while(choices.length < 3) {
+                const rand = alphabetData[Math.floor(Math.random() * alphabetData.length)];
+                if (!choices.includes(rand)) choices.push(rand);
+            }
+            choices.sort(() => Math.random() - 0.5);
+
+            choices.forEach(c => {
+                const btn = document.createElement('button');
+                btn.className = 'pill-btn btn-purple';
+                btn.style.fontSize = '28px';
+                btn.innerText = isUppercase ? c.char : c.char.toLowerCase();
+                btn.onclick = () => {
+                    if (c.char === monsterTarget.char) {
+                        document.getElementById('monsterMouth').classList.add('open');
+                        speak("Yummy! Thank you!");
+                        monsterScore += 10;
+                        document.getElementById('monsterScore').innerText = monsterScore;
+                        setTimeout(() => {
+                            document.getElementById('monsterMouth').classList.remove('open');
+                            nextMonsterRound();
+                        }, 1000);
+                    } else {
+                        speak(`Oops! That is ${c.char}`);
+                    }
+                };
+                choicesDiv.appendChild(btn);
+            });
+        }
+
+        function renderStickers() {
+            const grid = document.getElementById('stickerGrid');
+            grid.innerHTML = '';
+            alphabetData.forEach(item => {
+                const st = document.createElement('div');
+                st.className = 'sticker-item';
+                st.innerHTML = `<div>${item.emoji}</div><div style="font-size:12px;">${item.word}</div>`;
+                st.onclick = () => speak(`${item.word} sticker!`);
+                grid.appendChild(st);
+            });
+        }
+
+        let pNum1 = 0, pNum2 = 0;
+        function openParentGate() {
+            pNum1 = Math.floor(Math.random() * 5) + 2;
+            pNum2 = Math.floor(Math.random() * 4) + 1;
+            document.getElementById('mathQuestion').innerText = `Solve: ${pNum1} + ${pNum2} = ?`;
+            document.getElementById('mathAnswer').value = '';
+            document.getElementById('parentModal').classList.add('active');
+        }
+
+        function checkParentGate() {
+            const ans = parseInt(document.getElementById('mathAnswer').value);
+            if (ans === (pNum1 + pNum2)) {
+                alert("Settings unlocked! Audio Phonics and Volume are optimal.");
+                closeParentGate();
             } else {
-                state.streak = 0;
-                setMascot('curious');
-                playSound('error');
-                document.getElementById('gameContent').innerHTML = '🤔 Nochmal!';
-                document.getElementById('gameContent').style.color = '#e74c3c';
-                setTimeout(loadRound, 1500);
-            }
-            updateUI();
-        }
-
-        function showLevelUp(lvl) {
-            const overlay = document.getElementById('levelUpOverlay');
-            document.getElementById('newLevelNum').innerText = lvl;
-            overlay.style.display = 'flex';
-            playSound('levelup');
-            setTimeout(() => { overlay.style.display = 'none'; loadRound(); }, 2500);
-        }
-
-        function closeGame() {
-            document.getElementById('gameModal').style.display = 'none';
-            document.body.className = 'bg-main';
-        }
-
-        // --- SES SİSTEMİ (Web Audio API) ---
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function playSound(type) {
-            if(audioCtx.state === 'suspended') audioCtx.resume();
-            const osc = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            osc.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            
-            if(type === 'success') {
-                osc.type = 'sine'; osc.frequency.setValueAtTime(500, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(1000, audioCtx.currentTime + 0.1);
-                gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
-            } else if(type === 'error') {
-                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(200, audioCtx.currentTime);
-                osc.frequency.linearRampToValueAtTime(100, audioCtx.currentTime + 0.2);
-                gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
-            } else if(type === 'levelup') {
-                osc.type = 'triangle'; 
-                osc.frequency.setValueAtTime(400, audioCtx.currentTime);
-                osc.frequency.setValueAtTime(600, audioCtx.currentTime + 0.1);
-                osc.frequency.setValueAtTime(800, audioCtx.currentTime + 0.2);
-                gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.6);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.6);
+                alert("Incorrect answer for Parent Gate!");
             }
         }
 
-        // Başlat
-        updateUI();
-        renderGames();
+        function closeParentGate() {
+            document.getElementById('parentModal').classList.remove('active');
+        }
+
+        renderHomeAlphabet();
     </script>
 </body>
 </html>
